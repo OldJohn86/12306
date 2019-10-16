@@ -12,11 +12,11 @@ def Email():
     sendEmail(u"订票小助手测试一下")
 
 
-def PushServerChan():
+def PushbearConf():
     sendServerChan("订票小助手测试一下")
 
 
 if __name__ == '__main__':
     run()
-    # Email()
-    # PushbearConf()
+#    Email()
+#    PushbearConf()

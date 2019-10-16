@@ -1,9 +1,11 @@
 # -*- coding: utf8 -*-
+
 import socket
 __author__ = 'MR.wen'
 import TickerConfig
 from email.header import Header
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 import smtplib
 
 
@@ -21,6 +23,7 @@ def sendEmail(msg):
             username = TickerConfig.EMAIL_CONF["username"]
             password = TickerConfig.EMAIL_CONF["password"]
             host = TickerConfig.EMAIL_CONF["host"]
+            port = TickerConfig.EMAIL_CONF["port"]
             s = "{0}".format(msg)
 
             msg = MIMEText(s, 'plain', 'utf-8')  # 中文需参数‘utf-8’，单字节字符不需要
@@ -29,16 +32,14 @@ def sendEmail(msg):
             msg['To'] = receiver
 
             try:
-                smtp = smtplib.SMTP_SSL(host)
-                smtp.connect(host)
-            except socket.error:
-                smtp = smtplib.SMTP()
-                smtp.connect(host)
-            smtp.connect(host)
-            smtp.login(username, password)
-            smtp.sendmail(sender, receiver.split(","), msg.as_string())
-            smtp.quit()
-            print(u"邮件已通知, 请查收")
+                smtp = smtplib.SMTP(host, port)
+                smtp.starttls()
+                smtp.login(username, password)
+                smtp.sendmail(sender, receiver.split(","), msg.as_string())
+                smtp.quit()
+                print(u"邮件已通知, 请查收")
+            except smtplib.SMTPException as e:
+                print(u"邮件通知发送失败！".format(e))
     except Exception as e:
         print(u"邮件配置有误{}".format(e))
 
